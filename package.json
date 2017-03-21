@@ -1,0 +1,30 @@
+{
+  "name": "p5.geometry",
+  "version": "0.0.1",
+  "description": "Addon library for creative enviroment p5.js",
+  "main": "p5.geometry.js",
+  "scripts": {
+    "test": "mocha ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Durisvk/p5.geometry.git"
+  },
+  "keywords": [
+    "p5",
+    "vertices",
+    "geometry"
+  ],
+  "author": "Juraj Carnogursky",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Durisvk/p5.geometry/issues"
+  },
+  "homepage": "https://github.com/Durisvk/p5.geometry#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jasmine": "^2.5.3",
+    "lab": "^13.0.1",
+    "mocha": "^3.2.0"
+  }
+}
