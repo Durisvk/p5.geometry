@@ -1,6 +1,19 @@
-if(typeof p5 === 'undefined') {
-    var p5 = {};
-}
+(function(root, factory) {
+    try {
+        if (typeof define === 'function' && define.amd)
+            define('p5.play', ['p5'], function(p5) { (factory(p5)); });
+        else if (typeof exports === 'object')
+            factory(require('../p5'));
+        else
+            factory(root.p5);
+    } catch(e) {
+        var p5 = {};
+        factory(p5);
+        if (typeof exports === 'object') {
+            module.exports = p5;
+        }
+    }
+}(this, function(p5) {
 
 /**
  * Represents a structure that will hold the p5.Vector array.
@@ -88,12 +101,94 @@ p5.VectorList.prototype.getAll = function() {
     return this.array;
 };
 
+/**
+ * Adds a vectors to each other like chain.
+ * vector[ i ].add( vector[ i + 1 ] )
+ * @example
+ * var position = new p5.Vector();
+ * var velocity = new p5.Vector();
+ * var acceleration = new p5.Vector();
+ * var list = new p5.VectorList(position, velocity, acceleration);
+ * function draw() {
+ *  list.chainAdd();
+ * }
+ */
 p5.VectorList.prototype.chainAdd = function() {
     for ( var i = 0; i < this.array.length - 1; i++ ) {
         add(this.array[i], this.array[i + 1]);
     }
 }
 
+/**
+ * Returns the average position of vectors
+ * @return {p5.Vector} 
+ */
+p5.VectorList.prototype.average = function() {
+    var v = {
+        x: this.array.reduce(
+        function(sum, item) {
+            return sum + item.x;
+        }, 0)/this.array.length,
+        y: this.array.reduce(
+            function(sum, item) {
+                return sum + item.y;
+            }, 0)/this.array.length,
+        z: this.array.reduce(
+            function(sum, item) {
+                return sum + item.z;
+            }, 0
+        )/this.array.length,
+    };
+    if(typeof p5.Vector !== 'undefined') {
+        return new p5.Vector(v.x, v.y, v.z);
+    }
+    else {
+        return v;
+    }
+};
+
+/**
+ * Calculates the geometric mean of vectors
+ * @return {p5.Vector} - new p5.Vector
+ */
+p5.VectorList.prototype.geometricMean = function() {
+    var v = {
+        x: Math.pow(this.array.reduce(
+            function(mul, item) {
+                return mul*Math.abs(item.x);
+            }, 1), 1/this.array.length),
+        y: Math.pow(this.array.reduce(
+            function(mul, item) {
+                return mul*Math.abs(item.y);
+            }, 1), 1/this.array.length),
+        z: Math.pow(this.array.reduce(
+            function(mul, item) {
+                return Math.abs(mul*item.z);
+            }, 1), 1/this.array.length)
+    };
+    if(typeof p5.Vector !== 'undefined') {
+        return new p5.Vector(v.x, v.y, v.z);
+    }
+    else {
+        return v;
+    }
+};
+
+p5.VectorList.prototype.findMiddle = function() {
+    var avg = this.average();
+    var minVec = null;
+    var minDist = Infinity;
+    for ( var i = 0; i < this.array.length; i++ ) {
+        var d = Math.sqrt(Math.pow(avg.x - this.array[i].x, 2) +
+                Math.pow(avg.y - this.array[i].y, 2) +
+                Math.pow(avg.z - this.array[i].z, 2));
+        if( d < minDist ) {
+            minDist = d;
+            minVec = this.array[i];
+        }
+    }
+    return minVec;
+};
 
 function add(v1, v2) {
     v1.x += v2.x;
@@ -102,4 +197,4 @@ function add(v1, v2) {
 }
 
 
-module.exports = p5;
+}));

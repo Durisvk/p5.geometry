@@ -1,5 +1,7 @@
 var p5 = require('../src/VectorList');
-var expect = require('chai').expect;
+var Chai = require('chai');
+var expect = Chai.expect;
+var assert = Chai.assert;
 
 describe('p5.VectorList', function() {
     var vl;
@@ -52,5 +54,31 @@ describe('p5.VectorList', function() {
 
         expect(vl.array[2].x).to.equal(1);
         expect(vl.array[2].y).to.equal(-1);
+    });
+    it('should take the average of vectors', function() {
+        var v1 = {x: 2, y: 4};
+        var v2 = {x: 4, y: 2};
+        vl.add(v1, v2);
+        var average = vl.average();
+        expect(average.x).to.equal(3);
+        expect(average.y).to.equal(3);
+    });
+    it('should take geometric mean', function() {
+        var v1 = {x: 2, y: 3};
+        var v2 = {x: -1, y: 2};
+        vl.add(v1, v2);
+        var mean = vl.geometricMean();
+        assert.closeTo(mean.x, 1.4142, 0.001);
+        assert.closeTo(mean.y, 2.4494, 0.001);
+        assert.equal(mean.z, 0);
+    });
+    it('should find a middle', function() {
+        var v1 = {x: 2, y: 3};
+        var v2 = {x: -1, y: 2};
+        var v3 = {x: 2, y: 4};
+        var v4 = {x: 4, y: 2};
+        vl.add(v1, v2, v3, v4);
+        var mid = vl.findMiddle();
+        assert.deepEqual(mid, v1);
     });
 });
